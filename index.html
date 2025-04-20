@@ -1,183 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Noqerror Gate</title>
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      background: #ffffff;
-      height: 100%;
-      overflow: hidden;
-      cursor: default;
-      font-family: monospace;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Heartbeat Circle with Sound</title>
+    <style>
+        html, body {
+            height: 100vh;
+            width: 100vw;
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
 
-    .center {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
-    }
+        .circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background-color: #ffffff;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+        }
 
-    .pulse-circle {
-      width: 120px;
-      height: 120px;
-      background-color: black;
-      border-radius: 50%;
-      margin: auto;
-      cursor: pointer;
-      box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
-    }
+        @keyframes shake {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(-5px, 0); }
+            50% { transform: translate(5px, 0); }
+            75% { transform: translate(-5px, 0); }
+        }
 
-    .glitch {
-      animation: glitch 0.3s steps(2, end) 3;
-    }
+        @keyframes heartbeat {
+            0%, 20%, 40%, 100% { transform: scale(1); }
+            10%, 30% { transform: scale(1.4); }
+        }
 
-    .heart-beat {
-      animation: heartbeat 1.5s infinite;
-    }
+        .heartbeat {
+            animation: heartbeat 1.2s infinite;
+            background-color: red !important;
+            box-shadow: 0 0 30px red;
+        }
 
-    @keyframes heartbeat {
-      0% { transform: scale(1); box-shadow: 0 0 15px rgba(255, 0, 0, 0.5); }
-      14% { transform: scale(1.15); box-shadow: 0 0 25px rgba(255, 0, 0, 0.7); }
-      28% { transform: scale(1); box-shadow: 0 0 15px rgba(255, 0, 0, 0.5); }
-      42% { transform: scale(1.1); box-shadow: 0 0 20px rgba(255, 0, 0, 0.6); }
-      70% { transform: scale(1); box-shadow: 0 0 15px rgba(255, 0, 0, 0.5); }
-      100% { transform: scale(1); box-shadow: 0 0 15px rgba(255, 0, 0, 0.5); }
-    }
+        .glitch {
+            animation: glitch-animation 0.5s forwards;
+        }
 
-    @keyframes glitch {
-      0% { transform: translate(0px, 0px); background-color: black; }
-      25% { transform: translate(-5px, 2px); background-color: #111; }
-      50% { transform: translate(4px, -3px); background-color: #000; }
-      75% { transform: translate(-2px, 1px); background-color: #222; }
-      100% { transform: translate(0px, 0px); background-color: black; }
-    }
-
-    .noq-glitch {
-      position: absolute;
-      color: red;
-      font-size: 16px;
-      font-weight: bold;
-      opacity: 0;
-    }
-  </style>
+        @keyframes glitch-animation {
+            0% { transform: scale(1); opacity: 1; }
+            30% { transform: scale(1.2); opacity: 0.8; }
+            60% { transform: scale(1.1); opacity: 0.6; }
+            100% { transform: scale(1); opacity: 0; }
+        }
+    </style>
 </head>
 <body>
-  <div class="center">
-    <div id="circle" class="pulse-circle heart-beat"></div>
-  </div>
+    <div class="circle" id="circle"></div>
 
-  <audio id="glitch-audio1" preload="auto">
-    <source src="https://www.soundjay.com/button/sounds/button-16.mp3" type="audio/mpeg">
-  </audio>
-  <audio id="glitch-audio2" preload="auto">
-    <source src="https://www.soundjay.com/button/sounds/button-20.mp3" type="audio/mpeg">
-  </audio>
-  <audio id="glitch-audio3" preload="auto">
-    <source src="https://www.soundjay.com/button/sounds/button-23.mp3" type="audio/mpeg">
-  </audio>
-  <audio id="scream-audio" preload="auto">
-    <source src="https://www.soundjay.com/button/sounds/beep-10.mp3" type="audio/mpeg">
-  </audio>
-  <audio id="heartbeat-audio" preload="auto">
-    <source src="https://www.soundjay.com/human/sounds/heartbeat-1.mp3" type="audio/mpeg">
-  </audio>
+    <audio id="heartbeatSound" loop>
+        <source src="https://freesound.org/data/previews/414/414209_5121236-lq.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
 
-<script>
-    const circle = document.getElementById("circle");
-    const glitchSounds = [
-      document.getElementById("glitch-audio1"),
-      document.getElementById("glitch-audio2"),
-      document.getElementById("glitch-audio3")
-    ];
-    const scream = document.getElementById("scream-audio");
+    <script>
+        const circle = document.getElementById('circle');
+        const heartbeatSound = document.getElementById('heartbeatSound');
+        let clickCount = 0;
 
-    let glitchIntensity = parseInt(localStorage.getItem("noq_glitch_intensity")) || 0;
+        circle.addEventListener('click', () => {
+            clickCount++;
 
-    if (glitchIntensity >= 1) {
-      const r = Math.min(50 + glitchIntensity * 40, 255);
-      const g = Math.max(0, 50 - glitchIntensity * 15);
-      const b = Math.max(0, 50 - glitchIntensity * 25);
-      circle.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
-    }
-    if (glitchIntensity >= 3) {
-      circle.style.transform = `scale(${1 + glitchIntensity * 0.05}) rotate(${glitchIntensity * 2}deg)`;
-    }
-    if (glitchIntensity >= 5) {
-      triggerFinalGlitch();
-    }
-
-    circle.addEventListener("click", () => {
-      if (glitchIntensity >= 5) return;
-
-      circle.classList.add("glitch");
-      const chosenSound = glitchSounds[Math.floor(Math.random() * glitchSounds.length)];
-      chosenSound.volume = 0.15 + (glitchIntensity * 0.05);
-      chosenSound.currentTime = 0;
-      chosenSound.play();
-
-      const r = Math.min(50 + glitchIntensity * 40, 255);
-      const g = Math.max(0, 50 - glitchIntensity * 15);
-      const b = Math.max(0, 50 - glitchIntensity * 25);
-      circle.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
-
-      if (glitchIntensity >= 3) {
-        circle.style.transform = `scale(${1 + glitchIntensity * 0.05}) rotate(${glitchIntensity * 2}deg)`;
-      }
-
-      setTimeout(() => {
-        circle.classList.remove("glitch");
-      }, 1000);
-
-      glitchIntensity = Math.min(glitchIntensity + 1, 5);
-      localStorage.setItem("noq_glitch_intensity", glitchIntensity);
-
-      if (glitchIntensity === 5) {
-        triggerFinalGlitch();
-      }
-    });
-
-    function triggerFinalGlitch() {
-      const heartbeat = document.getElementById("heartbeat-audio");
-      heartbeat.volume = 0.1;
-      heartbeat.currentTime = 0;
-      heartbeat.play(); // immediate play to satisfy browser interaction
-
-      setInterval(() => {
-        heartbeat.currentTime = 0;
-        heartbeat.play();
-      }, 1500);
-      const heartbeat = document.getElementById("heartbeat-audio");
-      setInterval(() => {
-        heartbeat.volume = 0.1;
-        heartbeat.currentTime = 0;
-        heartbeat.play();
-      }, 1500);
-      circle.classList.remove("glitch");
-      circle.classList.add("heart-beat");
-      scream.volume = 0.2;
-      scream.play();
-
-      setInterval(() => {
-        const span = document.createElement("span");
-        span.className = "noq-glitch";
-        span.innerText = "NOQ";
-        span.style.left = `${Math.random() * 90}vw`;
-        span.style.top = `${Math.random() * 90}vh`;
-        span.style.opacity = 1;
-        document.body.appendChild(span);
-        setTimeout(() => {
-          span.remove();
-        }, 1000);
-      }, 300);
-
-      console.log("Final glitch triggered. Pulse now watches.");
-    }
-  </script>
+            if (clickCount < 5) {
+                circle.style.animation = 'shake ' + (0.2 / clickCount) + 's infinite';
+            } else if (clickCount === 5) {
+                circle.style.animation = '';
+                circle.classList.add('heartbeat');
+                heartbeatSound.play();
+                setTimeout(() => {
+                    circle.classList.add('glitch');
+                    setTimeout(() => {
+                        window.location.href = "https://www.ionos.com/domainshop/search?skipContractSelection=true#/result";
+                    }, 500); // After glitch completes, navigate to the pay page
+                }, 1200); // Wait for heartbeat to complete before glitch
+            }
+        });
+    </script>
 </body>
 </html>
