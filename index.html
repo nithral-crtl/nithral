@@ -16,7 +16,7 @@
       align-items: center;
       justify-content: center;
       overflow: hidden;
-      cursor: default;
+      cursor: none;
     }
     #container {
       text-align: center;
@@ -32,20 +32,32 @@
     }
     .entry-line {
       margin-bottom: 20px;
-      opacity: 0;
+      opacity: 1;
+      white-space: pre;
     }
-    .download-bait {
-      color: #0ff;
-      text-decoration: underline;
-      cursor: pointer;
-      margin-top: 20px;
+    #custom-cursor {
+      width: 10px;
+      height: 10px;
+      background-color: #0ff;
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      box-shadow: 0 0 8px #0ff, 0 0 16px #0ff;
+    }
+    #unlock {
       display: none;
+      margin-top: 40px;
+      font-size: 16px;
+      color: #0f0;
+      animation: blink 1.1s infinite;
     }
   </style>
 </head>
 <body>
   <div id="container"></div>
-  <div id="downloadLink" class="download-bait">[ SYSTEM FILE: NITHRAL_Δ_PROTOCOL.DAT ]</div>
+  <div id="unlock">UNLOCK SEQUENCE ACCEPTED</div>
+  <div id="custom-cursor"></div>
 
   <audio autoplay loop hidden>
     <source src="https://cdn.pixabay.com/audio/2022/03/09/audio_476f3e79c8.mp3" type="audio/mpeg">
@@ -53,6 +65,7 @@
 
   <script>
     const container = document.getElementById('container');
+    const unlockMessage = document.getElementById('unlock');
     const sets = [
       [
         "ENTRY DENIED",
@@ -68,7 +81,7 @@
         "Key: Null.Stack[04]",
         "Error: Anchor mismatch",
         "Response: Field recursion deployed",
-        "// There was no origin." 
+        "// There was no origin."
       ],
       [
         "BOOT FAILURE",
@@ -76,24 +89,42 @@
         "Memory: Fractured",
         "Protocol: Collapse Inbound",
         "Firewall: Loop Triggered",
-        "// Nothing ever loaded." 
+        "// Nothing ever loaded."
       ]
     ];
 
     const selected = sets[Math.floor(Math.random() * sets.length)];
 
-    selected.forEach((line, index) => {
-      const div = document.createElement('div');
-      div.classList.add('entry-line');
-      div.textContent = line;
-      container.appendChild(div);
-      setTimeout(() => {
-        div.style.opacity = 1;
-        if (index === selected.length - 1) {
-          document.getElementById('downloadLink').style.display = 'block';
+    function typeLine(line, container, delay) {
+      return new Promise(resolve => {
+        const div = document.createElement('div');
+        div.classList.add('entry-line');
+        container.appendChild(div);
+        let i = 0;
+        function typeChar() {
+          if (i < line.length) {
+            div.textContent += line.charAt(i);
+            i++;
+            setTimeout(typeChar, 25);
+          } else {
+            resolve();
+          }
         }
-      }, index * 900);
-    });
+        setTimeout(typeChar, delay);
+      });
+    }
+
+    async function typeAllLines(lines) {
+      for (let i = 0; i < lines.length; i++) {
+        await typeLine(lines[i], container, 0);
+      }
+      const blinker = document.createElement('div');
+      blinker.className = 'blinker';
+      blinker.textContent = '█';
+      container.appendChild(blinker);
+    }
+
+    typeAllLines(selected);
 
     const messages = [
       "Collapse registered.",
@@ -110,15 +141,23 @@
       current = (current + 1) % messages.length;
     });
 
-    document.getElementById('downloadLink').addEventListener('click', () => {
-      alert("SYSTEM FILE COMPROMISED\nTrace Signature Reversed\nCollapse Feedback Initialized");
-      document.body.innerHTML = '<div style="color: #0ff; font-family: Courier New, monospace; text-align: center; margin-top: 20vh;">\n      <h2>LOCK SEQUENCE DEPLOYED</h2>\n      <p>Exit request: denied</p>\n      <p>Recursive hold initiated...</p>\n      <p>█ █ █</p>\n    </div>';
+    const cursor = document.getElementById('custom-cursor');
+    document.addEventListener('mousemove', e => {
+      cursor.style.left = e.pageX + 'px';
+      cursor.style.top = e.pageY + 'px';
     });
 
-    const blinker = document.createElement('div');
-    blinker.className = 'blinker';
-    blinker.textContent = '█';
-    container.appendChild(blinker);
+    let typed = '';
+    document.addEventListener('keydown', (e) => {
+      typed += e.key;
+      if (typed.toLowerCase().includes("nithral")) {
+        unlockMessage.style.display = 'block';
+        typed = '';
+        setTimeout(() => {
+          window.location.href = 'gate.html';
+        }, 1500);
+      }
+    });
   </script>
 </body>
 </html>
