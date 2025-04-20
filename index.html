@@ -10,19 +10,6 @@
       -ms-text-size-adjust: 100%;
     }
     body {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 1rem;
-      box-sizing: border-box;
-    }
-    #container {
-      max-width: 100vw;
-      word-wrap: break-word;
-    }
-    html, body {
       margin: 0;
       padding: 0;
       height: 100vh;
@@ -30,15 +17,14 @@
       transition: background-color 1s ease;
       overflow: hidden;
       font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
     body.flashout {
       background-color: #fff;
     }
     #gateBtn {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
       padding: 16px 32px;
       font-size: 18px;
       background: transparent;
@@ -47,42 +33,38 @@
       cursor: pointer;
     }
     #pulse {
-      position: absolute;
-      top: -1000px;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 12px;
-      height: 12px;
-      background-color: #000;
-      border-radius: 50%;
-      animation: throb 3s ease-in-out infinite;
-      opacity: 0;
-      transition: opacity 1.5s ease;
-    }
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #000;
+  border-radius: 50%;
+  animation: throb 5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  opacity: 0;
+  transition: opacity 1.5s ease;
+}
     #pulse.visible {
-      display: block;
       opacity: 1;
     }
-    @keyframes throb {
-      0% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; }
+      100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0.7; }
+    }
+      50% { transform: translate(-50%, -50%) scale(2); opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0.7; }
+    }
+      25% { transform: translate(-50%, -50%) scale(1.7); opacity: 0.85; }
+      50% { transform: translate(-50%, -50%) scale(2); opacity: 1; }
+      75% { transform: translate(-50%, -50%) scale(1.7); opacity: 0.85; }
+      100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0.7; }
+    }
+      25% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.85; }
+      50% { transform: translate(-50%, -50%) scale(1.4); opacity: 1; }
+      75% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.85; }
+      
+    }
       50% { transform: translate(-50%, -50%) scale(1.05); opacity: 1; }
       100% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; }
-    }
-    #trapInput {
-      display: none;
-    }
-    #typedDisplay {
-      position: absolute;
-      top: 60%;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 4vw; max-width: 90vw;
-      font-family: monospace;
-      color: #000;
-      opacity: 0;
-      transition: opacity 1s ease;
     }
     #cursorDot {
       position: fixed;
@@ -105,21 +87,19 @@
       0% { opacity: 1; transform: scale(1); }
       100% { opacity: 0; transform: scale(6); }
     }
-  </style>
+  @keyframes throb {
+  0% { transform: translate(-50%, -50%) scale(1.5); opacity: 0.7; }
+  50% { transform: translate(-50%, -50%) scale(2); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0.7; }
+}
+</style>
 </head>
 <body id="body">
   <button id="gateBtn">Enter Gate</button>
-  <div id="pulse"></div>
-  <div id="typedDisplay"></div>
-  <input type="text" id="trapInput" autocomplete="off" />
+  <div id="pulse" style="display: none;"></div>
   <div id="cursorDot"></div>
 
   <script>
-    document.getElementById('keyboardToggle').addEventListener('click', function () {
-      const input = document.getElementById('trapInput');
-      input.style.display = 'block';
-      input.focus();
-    });
     window.addEventListener("DOMContentLoaded", function () {
       const cursor = document.getElementById('cursorDot');
       document.addEventListener('mousemove', (e) => {
@@ -130,9 +110,6 @@
       const btn = document.getElementById('gateBtn');
       const body = document.getElementById('body');
       const pulse = document.getElementById('pulse');
-      const trapInput = document.getElementById('trapInput');
-      const display = document.getElementById("typedDisplay");
-      let typed = '';
 
       btn.addEventListener('click', () => {
         cursor.classList.add('dissolve-cursor');
@@ -140,29 +117,11 @@
         body.classList.add('flashout');
         btn.style.display = 'none';
         setTimeout(() => {
+          pulse.style.display = 'block';
           pulse.classList.add('visible');
-          trapInput.style.display = 'block';
-          trapInput.focus();
         }, 1200);
-      });
-
-      function checkIrritation() {
-        const lowerTyped = typed.toLowerCase();
-        display.textContent = typed;
-        display.style.opacity = '1';
-      }
-
-      document.addEventListener('keydown', (e) => {
-        typed += e.key;
-        checkIrritation();
-      });
-
-      trapInput.addEventListener('input', (e) => {
-        typed += e.data;
-        checkIrritation();
       });
     });
   </script>
-<button id="keyboardToggle" style="position: absolute; bottom: 10%; left: 50%; transform: translateX(-50%); padding: 12px 20px; font-size: 16px; background: #fff; color: #000; border: none; border-radius: 6px; z-index: 1000;">Toggle Keyboard</button>
 </body>
 </html>
