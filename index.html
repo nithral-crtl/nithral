@@ -1,189 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gate</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Noqerror Gate</title>
   <style>
-    html {
-      -webkit-text-size-adjust: 100%;
-      -ms-text-size-adjust: 100%;
-    }
-    body {
+    html, body {
       margin: 0;
       padding: 0;
-      height: 100vh;
-      background-color: #000;
-      transition: background-color 1s ease;
+      background: #ffffff;
+      height: 100%;
       overflow: hidden;
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      cursor: default;
+      font-family: monospace;
     }
-    body.flashout {
-      background-color: #fff;
+
+    .center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
     }
-    #gateBtn {
-      padding: 16px 32px;
-      font-size: 18px;
-      background: transparent;
-      color: #fff;
-      border: 2px solid #fff;
-      cursor: pointer;
-      transition: background-color 1s ease, color 1s ease;
-    }
-    body.flashout #gateBtn {
-      background-color: #fff;
-      color: #000;
-    }
-    #pulse {
-  width: 24px;
-  height: 24px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: #000;
-  border-radius: 50%;
-  opacity: 0;
-  animation: none;
-  display: none;
-  transition: opacity 2.5s ease-in-out, transform 1s ease-in-out;
-}
-    #pulse.visible {
-  animation: throb 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-  opacity: 1;
-}
-    @keyframes throb {
-  0% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; }
-  50% { transform: translate(-50%, -50%) scale(1.4); opacity: 1; }
-  100% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; }
-}
-  50% { transform: translate(-50%, -50%) scale(2); opacity: 1; }
-  100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0.7; }
-}
-  30% { transform: translate(-50%, -50%) scale(2); opacity: 1; }
-  45% { transform: translate(-50%, -50%) scale(1.6); opacity: 0.85; }
-  65% { transform: translate(-50%, -50%) scale(1.9); opacity: 1; }
-  100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0.7; }
-}
-      50% { transform: translate(-50%, -50%) scale(2); opacity: 1; }
-      100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0.7; }
-    }
-    #cursorDot {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 12px;
-      height: 12px;
-      background-color: white;
+
+    .pulse-circle {
+      width: 120px;
+      height: 120px;
+      background-color: black;
       border-radius: 50%;
-      pointer-events: none;
-      z-index: 9999;
-      box-shadow: 0 0 10px white, 0 0 20px white;
-      mix-blend-mode: difference;
-      transition: transform 0.4s ease, opacity 0.5s ease;
+      animation: pulse 2s infinite;
+      margin: auto;
     }
-    .cursor-expand {
-      animation: expandCursor 1s forwards;
-    }
-    @keyframes expandCursor {
+
+    @keyframes pulse {
       0% { transform: scale(1); opacity: 1; }
-      100% { transform: scale(100); opacity: 0; }
+      50% { transform: scale(1.1); opacity: 0.6; }
+      100% { transform: scale(1); opacity: 1; }
     }
-  #shadowPulse {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background-color: rgba(0, 0, 0, 0.05);
-  opacity: 0;
-  animation: flicker 7s infinite ease-in-out;
-  pointer-events: none;
-  z-index: 0;
-}
-@keyframes flicker {
-  0%, 100% { opacity: 0; }
-  45% { opacity: 0.02; }
-  50% { opacity: 0.07; }
-  55% { opacity: 0.02; }
-  60% { opacity: 0; }
-}
 
-@keyframes subtleShake {
-  0% { transform: translate(0, 0); }
-  50% { transform: translate(0.4px, -0.4px); }
-  100% { transform: translate(0, 0); }
-}
-#echoText {
-  position: absolute;
-  top: 60%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 2rem;
-  color: #f9f9f9;
-  opacity: 0;
-  pointer-events: none;
-  font-family: 'Arial', sans-serif;
-  mix-blend-mode: difference;
-  transition: opacity 3s ease;
-  z-index: 2;
-}
-</style>
+    .message {
+      color: black;
+      font-size: 16px;
+      margin-top: 20px;
+      opacity: 0;
+      transition: opacity 2s;
+    }
+
+    .rectangle {
+      width: 150px;
+      height: 60px;
+      border: 2px solid black;
+      margin: 40px auto 0;
+      opacity: 0;
+      cursor: pointer;
+      transition: opacity 2s;
+    }
+
+    .countdown {
+      font-size: 24px;
+      margin-top: 20px;
+      opacity: 0;
+    }
+  </style>
 </head>
-<body id="body" data-presence="Nithral">
-  <button id="gateBtn">Enter Gate</button>
-  <div id="pulse"></div>
-  <div id="shadowPulse"></div>
-  <div id="cursorDot"></div>
+<body>
+  <div class="center">
+    <div class="pulse-circle"></div>
+    <div class="message" id="msg">You were not supposed to find this.</div>
+    <div class="rectangle" id="rect"></div>
+    <div class="countdown" id="countdown"></div>
+  </div>
 
-  <!-- Moved script to bottom to fix null reference issue -->
   <script>
-    const cursor = document.getElementById('cursorDot');
-    document.addEventListener('mousemove', (e) => {
-      cursor.style.top = e.clientY + 'px';
-      cursor.style.left = e.clientX + 'px';
-    });
+    const msg = document.getElementById("msg");
+    const rect = document.getElementById("rect");
+    const countdown = document.getElementById("countdown");
 
-    const btn = document.getElementById('gateBtn');
-    const body = document.getElementById('body');
-    const pulse = document.getElementById('pulse');
+    setTimeout(() => {
+      msg.style.opacity = 1;
+      rect.style.opacity = 1;
+    }, 3000);
 
-    btn.addEventListener('click', () => {
-      document.body.style.cursor = 'none';
-      cursor.classList.add('cursor-expand');
-      document.documentElement.classList.add('flashout');
-      body.classList.add('flashout');
-      btn.style.display = 'none';
-      pulse.style.display = 'block';
-      requestAnimationFrame(() => {
-        pulse.classList.add('visible');
-        document.getElementById('shadowPulse').style.opacity = '1';
-      });
+    rect.addEventListener("click", () => {
+      rect.style.display = "none";
+      let timeLeft = 3;
+      countdown.style.opacity = 1;
+      countdown.innerText = timeLeft;
+
+      const interval = setInterval(() => {
+        timeLeft--;
+        if (timeLeft <= 0) {
+          clearInterval(interval);
+          countdown.innerText = "";
+          setTimeout(() => {
+            window.location.href = "https://your-payment-link.com"; // replace with actual
+          }, 3000);
+        } else {
+          countdown.innerText = timeLeft;
+        }
+      }, 1000);
     });
-      // Subtle screen shake every 55 seconds
-    setInterval(() => {
-      document.body.style.animation = 'subtleShake 0.4s ease';
-      setTimeout(() => {
-        document.body.style.animation = '';
-      }, 400);
-    }, 55000);
-      // Reveal echo text after 111 seconds
-    setTimeout(() => {
-      const echo = document.getElementById('echoText');
-      echo.style.opacity = '1';
-      setTimeout(() => {
-        echo.style.opacity = '0';
-      }, 9000); // stays for 9 seconds
-    }, 111000);
-    setTimeout(() => {
-      document.getElementById('echoText').style.opacity = '1';
-    }, 111000);
-</script>
-<div id="echoText">It sees you.</div>
+  </script>
 </body>
 </html>
