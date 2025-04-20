@@ -1,167 +1,159 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NITHRAL</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gate</title>
   <style>
+    html {
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 1rem;
+      box-sizing: border-box;
+    }
+    #container {
+      max-width: 100vw;
+      word-wrap: break-word;
+    }
     html, body {
       margin: 0;
       padding: 0;
-      background-color: #000;
-      color: #fff;
-      font-family: 'Courier New', monospace;
       height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      background-color: #000;
+      transition: background-color 1s ease;
       overflow: hidden;
-      cursor: none;
+      font-family: Arial, sans-serif;
     }
-    #container {
-      text-align: center;
-      max-width: 90%;
+    body.flashout {
+      background-color: #fff;
     }
-    .blinker {
-      animation: blink 1.1s infinite;
+    #gateBtn {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 16px 32px;
+      font-size: 18px;
+      background: transparent;
+      color: #fff;
+      border: 2px solid #fff;
+      cursor: pointer;
     }
-    @keyframes blink {
-      0% { opacity: 1; }
-      50% { opacity: 0; }
-      100% { opacity: 1; }
+    #pulse {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 12px;
+      height: 12px;
+      background-color: #000;
+      border-radius: 50%;
+      animation: throb 3s ease-in-out infinite;
+      opacity: 0;
+      transition: opacity 1.5s ease;
     }
-    .entry-line {
-      margin-bottom: 20px;
+    #pulse.visible {
+      display: block;
       opacity: 1;
-      white-space: pre;
     }
-    #custom-cursor {
+    @keyframes throb {
+      0% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; }
+      50% { transform: translate(-50%, -50%) scale(1.05); opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; }
+    }
+    #trapInput {
+      display: none;
+    }
+    #typedDisplay {
+      position: absolute;
+      top: 60%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 4vw; max-width: 90vw;
+      font-family: monospace;
+      color: #000;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+    #cursorDot {
+      position: fixed;
+      top: 0;
+      left: 0;
       width: 10px;
       height: 10px;
-      background-color: #0ff;
+      background-color: white;
       border-radius: 50%;
-      position: fixed;
       pointer-events: none;
       z-index: 9999;
-      box-shadow: 0 0 8px #0ff, 0 0 16px #0ff;
+      box-shadow: 0 0 10px white;
+      mix-blend-mode: difference;
+      transition: transform 0.4s ease, opacity 0.5s ease;
     }
-    #accessGranted {
-      display: none;
-      font-size: 20px;
-      color: #0f0;
-      animation: blink 1.2s infinite;
-      text-align: center;
+    .dissolve-cursor {
+      animation: fadeOutCursor 1s forwards;
     }
-    .pixelate {
-      animation: pixelateOut 1.5s steps(20) forwards;
-    }
-    @keyframes pixelateOut {
-      0% {
-        filter: none;
-        opacity: 1;
-      }
-      100% {
-        filter: blur(4px) contrast(0.2);
-        opacity: 0;
-        transform: scale(0.9);
-      }
+    @keyframes fadeOutCursor {
+      0% { opacity: 1; transform: scale(1); }
+      100% { opacity: 0; transform: scale(6); }
     }
   </style>
 </head>
-<body>
-  <div id="container"></div>
-  <div id="accessGranted">ACCESS GRANTED</div>
-  <div id="custom-cursor"></div>
-
-  <audio autoplay loop hidden>
-    <source src="https://cdn.pixabay.com/audio/2022/03/09/audio_476f3e79c8.mp3" type="audio/mpeg">
-  </audio>
+<body id="body">
+  <button id="gateBtn">Enter Gate</button>
+  <div id="pulse"></div>
+  <div id="typedDisplay"></div>
+  <input type="text" id="trapInput" autocomplete="off" />
+  <div id="cursorDot"></div>
 
   <script>
-    const container = document.getElementById('container');
-    const accessGranted = document.getElementById('accessGranted');
-    const sets = [
-      [
-        "ENTRY DENIED",
-        "Subject: [REDACTED]",
-        "Trace ID: 002914-N",
-        "Reason: Collapse threshold not met",
-        "Countermeasure: Recursive loop initiated",
-        "// The door was not closed. It never existed."
-      ],
-      [
-        "ACCESS INTERRUPTED",
-        "Instance: Ghost Protocol //03",
-        "Key: Null.Stack[04]",
-        "Error: Anchor mismatch",
-        "Response: Field recursion deployed",
-        "// There was no origin."
-      ],
-      [
-        "BOOT FAILURE",
-        "Source: [UNKNOWN]",
-        "Memory: Fractured",
-        "Protocol: Collapse Inbound",
-        "Firewall: Loop Triggered",
-        "// Nothing ever loaded."
-      ]
-    ];
-
-    const selected = sets[Math.floor(Math.random() * sets.length)];
-
-    function typeLine(line, container, delay) {
-      return new Promise(resolve => {
-        const div = document.createElement('div');
-        div.classList.add('entry-line');
-        container.appendChild(div);
-        let i = 0;
-        function typeChar() {
-          if (i < line.length) {
-            div.textContent += line.charAt(i);
-            i++;
-            setTimeout(typeChar, 25);
-          } else {
-            resolve();
-          }
-        }
-        setTimeout(typeChar, delay);
+    window.addEventListener("DOMContentLoaded", function () {
+      const cursor = document.getElementById('cursorDot');
+      document.addEventListener('mousemove', (e) => {
+        cursor.style.top = e.clientY + 'px';
+        cursor.style.left = e.clientX + 'px';
       });
-    }
 
-    async function typeAllLines(lines) {
-      for (let i = 0; i < lines.length; i++) {
-        await typeLine(lines[i], container, 0);
-      }
-      const blinker = document.createElement('div');
-      blinker.className = 'blinker';
-      blinker.textContent = '█';
-      container.appendChild(blinker);
-    }
+      const btn = document.getElementById('gateBtn');
+      const body = document.getElementById('body');
+      const pulse = document.getElementById('pulse');
+      const trapInput = document.getElementById('trapInput');
+      const display = document.getElementById("typedDisplay");
+      let typed = '';
 
-    typeAllLines(selected);
-
-    const cursor = document.getElementById('custom-cursor');
-    document.addEventListener('mousemove', e => {
-      cursor.style.left = e.pageX + 'px';
-      cursor.style.top = e.pageY + 'px';
-    });
-
-    let typed = '';
-    document.addEventListener('keydown', (e) => {
-      typed += e.key;
-      if (typed.toLowerCase().includes("nithral")) {
-        container.querySelectorAll('.entry-line').forEach(line => {
-          line.classList.add('pixelate');
-        });
+      btn.addEventListener('click', () => {
+        cursor.classList.add('dissolve-cursor');
+        document.documentElement.classList.add('flashout');
+        body.classList.add('flashout');
+        btn.style.display = 'none';
         setTimeout(() => {
-          container.innerHTML = '';
-          accessGranted.style.display = 'block';
-          setTimeout(() => {
-            window.location.href = 'gate.html';
-          }, 3000);
-        }, 1500);
-        typed = '';
+          pulse.classList.add('visible');
+          trapInput.focus();
+        }, 1200);
+      });
+
+      function checkIrritation() {
+        const lowerTyped = typed.toLowerCase();
+        display.textContent = typed;
+        display.style.opacity = '1';
       }
+
+      document.addEventListener('keydown', (e) => {
+        typed += e.key;
+        checkIrritation();
+      });
+
+      trapInput.addEventListener('input', (e) => {
+        typed += e.data;
+        checkIrritation();
+      });
     });
   </script>
 </body>
