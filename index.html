@@ -38,22 +38,23 @@
       color: #000;
     }
     #pulse {
-      width: 24px;
-      height: 24px;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: #000;
-      border-radius: 50%;
-      animation: throb 5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-      opacity: 0;
-      transition: opacity 1.5s ease;
-      display: none;
-    }
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #000;
+  border-radius: 50%;
+  opacity: 0;
+  animation: none;
+  display: none;
+  transition: opacity 2.5s ease-in-out, transform 1s ease-in-out;
+}
     #pulse.visible {
-      opacity: 1;
-    }
+  animation: throb 5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  opacity: 1;
+}
     @keyframes throb {
       0% { transform: translate(-50%, -50%) scale(1.5); opacity: 0.7; }
       50% { transform: translate(-50%, -50%) scale(2); opacity: 1; }
@@ -104,10 +105,10 @@
       document.documentElement.classList.add('flashout');
       body.classList.add('flashout');
       btn.style.display = 'none';
-      setTimeout(() => {
-        pulse.style.display = 'block';
+      pulse.style.display = 'block';
+      requestAnimationFrame(() => {
         pulse.classList.add('visible');
-      }, 1200);
+      });
     });
   </script>
 </body>
