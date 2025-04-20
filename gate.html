@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Enter Gate</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: #000;
+      color: #fff;
+      font-family: 'Courier New', monospace;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+    button {
+      padding: 12px 24px;
+      background-color: transparent;
+      border: 2px solid #0ff;
+      color: #0ff;
+      font-size: 18px;
+      cursor: pointer;
+      text-transform: uppercase;
+      box-shadow: 0 0 10px #0ff;
+      transition: all 0.5s ease;
+    }
+    button:hover {
+      background-color: #0ff;
+      color: #000;
+    }
+    .pixelate {
+      animation: pixelateOut 1.5s steps(20) forwards;
+    }
+    @keyframes pixelateOut {
+      0% {
+        filter: none;
+        opacity: 1;
+      }
+      100% {
+        filter: blur(4px) contrast(0.2);
+        opacity: 0;
+        transform: scale(0.9);
+      }
+    }
+  </style>
+</head>
+<body id="mainBody">
+  <h2 id="heading">ACCESS REQUEST</h2>
+  <button id="enterButton">Enter Gate</button>
+
+  <script>
+    const button = document.getElementById('enterButton');
+    const heading = document.getElementById('heading');
+    const body = document.getElementById('mainBody');
+
+    button.addEventListener('click', () => {
+      heading.classList.add('pixelate');
+      button.classList.add('pixelate');
+      setTimeout(() => {
+        body.innerHTML = '';
+      }, 1500);
+    });
+  </script>
+</body>
+</html>
