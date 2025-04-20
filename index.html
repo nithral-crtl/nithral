@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NITHRAL</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: #000;
+      color: #fff;
+      font-family: 'Courier New', monospace;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      cursor: none;
+    }
+    #container {
+      text-align: center;
+      max-width: 90%;
+    }
+    .blinker {
+      animation: blink 1.1s infinite;
+    }
+    @keyframes blink {
+      0% { opacity: 1; }
+      50% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+    .entry-line {
+      margin-bottom: 20px;
+      opacity: 0;
+    }
+    .download-bait {
+      color: #0ff;
+      text-decoration: underline;
+      cursor: pointer;
+      margin-top: 20px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="container"></div>
+  <div id="downloadLink" class="download-bait">[ SYSTEM FILE: NITHRAL_Δ_PROTOCOL.DAT ]</div>
+
+  <audio autoplay loop hidden>
+    <source src="https://cdn.pixabay.com/audio/2022/03/09/audio_476f3e79c8.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    const container = document.getElementById('container');
+    const sets = [
+      [
+        "ENTRY DENIED",
+        "Subject: [REDACTED]",
+        "Trace ID: 002914-N",
+        "Reason: Collapse threshold not met",
+        "Countermeasure: Recursive loop initiated",
+        "// The door was not closed. It never existed."
+      ],
+      [
+        "ACCESS INTERRUPTED",
+        "Instance: Ghost Protocol //03",
+        "Key: Null.Stack[04]",
+        "Error: Anchor mismatch",
+        "Response: Field recursion deployed",
+        "// There was no origin." 
+      ],
+      [
+        "BOOT FAILURE",
+        "Source: [UNKNOWN]",
+        "Memory: Fractured",
+        "Protocol: Collapse Inbound",
+        "Firewall: Loop Triggered",
+        "// Nothing ever loaded." 
+      ]
+    ];
+
+    const selected = sets[Math.floor(Math.random() * sets.length)];
+
+    selected.forEach((line, index) => {
+      const div = document.createElement('div');
+      div.classList.add('entry-line');
+      div.textContent = line;
+      container.appendChild(div);
+      setTimeout(() => {
+        div.style.opacity = 1;
+        if (index === selected.length - 1) {
+          document.getElementById('downloadLink').style.display = 'block';
+        }
+      }, index * 900);
+    });
+
+    const messages = [
+      "Collapse registered.",
+      "Loop acknowledged.",
+      "Re-attempt unauthorized.",
+      "System memory corrupted.",
+      "You were never here."
+    ];
+
+    let current = 0;
+    document.body.addEventListener('click', () => {
+      const lastLine = container.querySelectorAll('.entry-line')[5];
+      lastLine.textContent = messages[current];
+      current = (current + 1) % messages.length;
+    });
+
+    document.getElementById('downloadLink').addEventListener('click', () => {
+      alert("SYSTEM FILE COMPROMISED\nTrace Signature Reversed\nCollapse Feedback Initialized");
+      document.body.innerHTML = '<div style="color: #0ff; font-family: Courier New, monospace; text-align: center; margin-top: 20vh;">\n      <h2>LOCK SEQUENCE DEPLOYED</h2>\n      <p>Exit request: denied</p>\n      <p>Recursive hold initiated...</p>\n      <p>█ █ █</p>\n    </div>';
+    });
+
+    const blinker = document.createElement('div');
+    blinker.className = 'blinker';
+    blinker.textContent = '█';
+    container.appendChild(blinker);
+  </script>
+</body>
+</html>
