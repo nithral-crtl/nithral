@@ -29,10 +29,6 @@
       border: 2px solid #fff;
       cursor: pointer;
     }
-    #gateBtn:hover {
-      background: #fff;
-      color: #000;
-    }
     #pulse {
       display: none;
       position: absolute;
@@ -54,9 +50,20 @@
     @keyframes throb {
       0% {
         transform: translate(-50%, -50%) scale(1);
-        box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+        box-shadow: none;
         opacity: 0.7;
       }
+      50% {
+        transform: translate(-50%, -50%) scale(1.05);
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(1);
+        box-shadow: none;
+        opacity: 0.7;
+      }
+    }
       50% {
         transform: translate(-50%, -50%) scale(1.4);
         box-shadow: 0 0 25px rgba(0, 0, 0, 0.2), 0 0 50px rgba(0, 0, 0, 0.1);
@@ -68,16 +75,8 @@
         opacity: 0.7;
       }
     }
-      50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
-      100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
-    }
-      50% { transform: translate(-50%, -50%) scale(1.5); opacity: 1; }
-      100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
-    }
     #trapInput {
-      position: absolute;
-      bottom: -9999px;
-      opacity: 0;
+      display: none;
     }
   </style>
 </head>
@@ -112,7 +111,7 @@
     trapInput.addEventListener('input', (e) => {
       typed += e.data;
       if (typed.toLowerCase().includes("pay")) {
-        window.location.href = 'https://yourtributeportal.com';
+        window.location.href = 'https://www.paypal.com/paypalme/ArcanaGate';
       }
     });
   </script>
