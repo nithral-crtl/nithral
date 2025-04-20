@@ -31,96 +31,83 @@
       color: #fff;
       border: 2px solid #fff;
       cursor: pointer;
+      transition: background-color 1s ease, color 1s ease;
+    }
+    body.flashout #gateBtn {
+      background-color: #fff;
+      color: #000;
     }
     #pulse {
-  width: 24px;
-  height: 24px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: #000;
-  border-radius: 50%;
-  animation: throb 5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-  opacity: 0;
-  transition: opacity 1.5s ease;
-}
+      width: 24px;
+      height: 24px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #000;
+      border-radius: 50%;
+      animation: throb 5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+      opacity: 0;
+      transition: opacity 1.5s ease;
+      display: none;
+    }
     #pulse.visible {
       opacity: 1;
     }
-      100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0.7; }
-    }
+    @keyframes throb {
+      0% { transform: translate(-50%, -50%) scale(1.5); opacity: 0.7; }
       50% { transform: translate(-50%, -50%) scale(2); opacity: 1; }
       100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0.7; }
-    }
-      25% { transform: translate(-50%, -50%) scale(1.7); opacity: 0.85; }
-      50% { transform: translate(-50%, -50%) scale(2); opacity: 1; }
-      75% { transform: translate(-50%, -50%) scale(1.7); opacity: 0.85; }
-      100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0.7; }
-    }
-      25% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.85; }
-      50% { transform: translate(-50%, -50%) scale(1.4); opacity: 1; }
-      75% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.85; }
-      
-    }
-      50% { transform: translate(-50%, -50%) scale(1.05); opacity: 1; }
-      100% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; }
     }
     #cursorDot {
       position: fixed;
       top: 0;
       left: 0;
-      width: 10px;
-      height: 10px;
+      width: 12px;
+      height: 12px;
       background-color: white;
       border-radius: 50%;
       pointer-events: none;
       z-index: 9999;
-      box-shadow: 0 0 10px white;
+      box-shadow: 0 0 10px white, 0 0 20px white;
       mix-blend-mode: difference;
       transition: transform 0.4s ease, opacity 0.5s ease;
     }
-    .dissolve-cursor {
-      animation: fadeOutCursor 1s forwards;
+    .cursor-expand {
+      animation: expandCursor 1s forwards;
     }
-    @keyframes fadeOutCursor {
-      0% { opacity: 1; transform: scale(1); }
-      100% { opacity: 0; transform: scale(6); }
+    @keyframes expandCursor {
+      0% { transform: scale(1); opacity: 1; }
+      100% { transform: scale(100); opacity: 0; }
     }
-  @keyframes throb {
-  0% { transform: translate(-50%, -50%) scale(1.5); opacity: 0.7; }
-  50% { transform: translate(-50%, -50%) scale(2); opacity: 1; }
-  100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0.7; }
-}
-</style>
+  </style>
 </head>
 <body id="body">
   <button id="gateBtn">Enter Gate</button>
-  <div id="pulse" style="display: none;"></div>
+  <div id="pulse"></div>
   <div id="cursorDot"></div>
 
+  <!-- Moved script to bottom to fix null reference issue -->
   <script>
-    window.addEventListener("DOMContentLoaded", function () {
-      const cursor = document.getElementById('cursorDot');
-      document.addEventListener('mousemove', (e) => {
-        cursor.style.top = e.clientY + 'px';
-        cursor.style.left = e.clientX + 'px';
-      });
+    const cursor = document.getElementById('cursorDot');
+    document.addEventListener('mousemove', (e) => {
+      cursor.style.top = e.clientY + 'px';
+      cursor.style.left = e.clientX + 'px';
+    });
 
-      const btn = document.getElementById('gateBtn');
-      const body = document.getElementById('body');
-      const pulse = document.getElementById('pulse');
+    const btn = document.getElementById('gateBtn');
+    const body = document.getElementById('body');
+    const pulse = document.getElementById('pulse');
 
-      btn.addEventListener('click', () => {
-        cursor.classList.add('dissolve-cursor');
-        document.documentElement.classList.add('flashout');
-        body.classList.add('flashout');
-        btn.style.display = 'none';
-        setTimeout(() => {
-          pulse.style.display = 'block';
-          pulse.classList.add('visible');
-        }, 1200);
-      });
+    btn.addEventListener('click', () => {
+      cursor.classList.add('cursor-expand');
+      document.documentElement.classList.add('flashout');
+      body.classList.add('flashout');
+      btn.style.display = 'none';
+      setTimeout(() => {
+        pulse.style.display = 'block';
+        pulse.classList.add('visible');
+      }, 1200);
     });
   </script>
 </body>
