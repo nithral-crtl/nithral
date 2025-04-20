@@ -119,6 +119,20 @@
   50% { transform: translate(0.4px, -0.4px); }
   100% { transform: translate(0, 0); }
 }
+#echoText {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
+  color: #f9f9f9;
+  opacity: 0;
+  pointer-events: none;
+  font-family: 'Arial', sans-serif;
+  mix-blend-mode: difference;
+  transition: opacity 3s ease;
+  z-index: 2;
+}
 </style>
 </head>
 <body id="body" data-presence="Nithral">
@@ -158,6 +172,18 @@
         document.body.style.animation = '';
       }, 400);
     }, 55000);
-  </script>
+      // Reveal echo text after 111 seconds
+    setTimeout(() => {
+      const echo = document.getElementById('echoText');
+      echo.style.opacity = '1';
+      setTimeout(() => {
+        echo.style.opacity = '0';
+      }, 9000); // stays for 9 seconds
+    }, 111000);
+    setTimeout(() => {
+      document.getElementById('echoText').style.opacity = '1';
+    }, 111000);
+</script>
+<div id="echoText">It sees you.</div>
 </body>
 </html>
