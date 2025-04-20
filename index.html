@@ -140,21 +140,6 @@
 
     typeAllLines(selected);
 
-    const messages = [
-      "Collapse registered.",
-      "Loop acknowledged.",
-      "Re-attempt unauthorized.",
-      "System memory corrupted.",
-      "You were never here."
-    ];
-
-    let current = 0;
-    document.body.addEventListener('click', () => {
-      const lastLine = container.querySelectorAll('.entry-line')[5];
-      lastLine.textContent = messages[current];
-      current = (current + 1) % messages.length;
-    });
-
     const cursor = document.getElementById('custom-cursor');
     document.addEventListener('mousemove', e => {
       cursor.style.left = e.pageX + 'px';
