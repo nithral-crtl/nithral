@@ -16,7 +16,7 @@
       align-items: center;
       justify-content: center;
       overflow: hidden;
-      cursor: default;
+      cursor: none;
     }
     #container {
       text-align: center;
@@ -45,18 +45,32 @@
       z-index: 9999;
       box-shadow: 0 0 8px #0ff, 0 0 16px #0ff;
     }
-    #unlock {
+    #accessGranted {
       display: none;
-      margin-top: 40px;
-      font-size: 16px;
+      font-size: 20px;
       color: #0f0;
-      animation: blink 1.1s infinite;
+      animation: blink 1.2s infinite;
+      text-align: center;
+    }
+    .pixelate {
+      animation: pixelateOut 1.5s steps(20) forwards;
+    }
+    @keyframes pixelateOut {
+      0% {
+        filter: none;
+        opacity: 1;
+      }
+      100% {
+        filter: blur(4px) contrast(0.2);
+        opacity: 0;
+        transform: scale(0.9);
+      }
     }
   </style>
 </head>
 <body>
   <div id="container"></div>
-  <div id="unlock">UNLOCK SEQUENCE ACCEPTED</div>
+  <div id="accessGranted">ACCESS GRANTED</div>
   <div id="custom-cursor"></div>
 
   <audio autoplay loop hidden>
@@ -65,7 +79,7 @@
 
   <script>
     const container = document.getElementById('container');
-    const unlockMessage = document.getElementById('unlock');
+    const accessGranted = document.getElementById('accessGranted');
     const sets = [
       [
         "ENTRY DENIED",
@@ -151,11 +165,17 @@
     document.addEventListener('keydown', (e) => {
       typed += e.key;
       if (typed.toLowerCase().includes("nithral")) {
-        unlockMessage.style.display = 'block';
-        typed = '';
+        container.querySelectorAll('.entry-line').forEach(line => {
+          line.classList.add('pixelate');
+        });
         setTimeout(() => {
-          window.location.href = 'gate.html';
+          container.innerHTML = '';
+          accessGranted.style.display = 'block';
+          setTimeout(() => {
+            window.location.href = 'gate.html';
+          }, 3000);
         }, 1500);
+        typed = '';
       }
     });
   </script>
