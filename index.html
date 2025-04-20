@@ -1,91 +1,94 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Heartbeat Circle with Sound</title>
-    <style>
-        html, body {
-            height: 100vh;
-            width: 100vw;
-            margin: 0;
-            padding: 0;
-            background-color: #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
+  <meta charset="UTF-8">
+  <title>Veyreth Gate</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-family: 'Courier New', Courier, monospace;
+    }
 
-        .circle {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            background-color: #ffffff;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
-            cursor: pointer;
-        }
+    #pulseCircle {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: white;
+      opacity: 0.2;
+      animation: calmPulse 1s infinite;
+    }
 
-        @keyframes shake {
-            0%, 100% { transform: translate(0, 0); }
-            25% { transform: translate(-5px, 0); }
-            50% { transform: translate(5px, 0); }
-            75% { transform: translate(-5px, 0); }
-        }
+    @keyframes calmPulse {
+      0% { transform: scale(1); opacity: 0.2; }
+      50% { transform: scale(1.15); opacity: 0.4; }
+      100% { transform: scale(1); opacity: 0.2; }
+    }
 
-        @keyframes heartbeat {
-            0%, 20%, 40%, 100% { transform: scale(1); }
-            10%, 30% { transform: scale(1.4); }
-        }
+    @keyframes erraticPulse {
+      0%, 100% { transform: scale(1); opacity: 0.2; }
+      10% { transform: scale(1.3); opacity: 0.5; }
+      25% { transform: scale(0.9); opacity: 0.1; }
+      40% { transform: scale(1.2); opacity: 0.4; }
+      60% { transform: scale(0.8); opacity: 0.3; }
+      80% { transform: scale(1.1); opacity: 0.5; }
+    }
 
-        .heartbeat {
-            animation: heartbeat 1.2s infinite;
-            background-color: red !important;
-            box-shadow: 0 0 30px red;
-        }
+    #finalReveal {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
 
-        .glitch {
-            animation: glitch-animation 0.5s forwards;
-        }
+    #finalReveal h1 {
+      font-size: 3em;
+      margin-bottom: 20px;
+      letter-spacing: 2px;
+    }
 
-        @keyframes glitch-animation {
-            0% { transform: scale(1); opacity: 1; }
-            30% { transform: scale(1.2); opacity: 0.8; }
-            60% { transform: scale(1.1); opacity: 0.6; }
-            100% { transform: scale(1); opacity: 0; }
-        }
-    </style>
+    #finalReveal p {
+      font-size: 1.2em;
+    }
+
+  </style>
 </head>
 <body>
-    <div class="circle" id="circle"></div>
+  <div id="pulseCircle"></div>
 
-    <audio id="heartbeatSound" loop>
-        <source src="https://freesound.org/data/previews/414/414209_5121236-lq.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
+  <div id="finalReveal">
+    <h1>Veyreth</h1>
+    <p>bc1ql9h3sqxt9rtypfeepn9246pxhhqcqlggecm7wd</p>
+    <p><em>If you feel it—act.</em></p>
+  </div>
 
-    <script>
-        const circle = document.getElementById('circle');
-        const heartbeatSound = document.getElementById('heartbeatSound');
-        let clickCount = 0;
+  <script>
+    const pulse = document.getElementById("pulseCircle");
+    const reveal = document.getElementById("finalReveal");
 
-        circle.addEventListener('click', () => {
-            clickCount++;
+    // Entrapment Phase: 20s calm
+    setTimeout(() => {
+      pulse.style.animation = "erraticPulse 1.5s infinite";
+    }, 20000);
 
-            if (clickCount < 5) {
-                circle.style.animation = 'shake ' + (0.2 / clickCount) + 's infinite';
-            } else if (clickCount === 5) {
-                circle.style.animation = '';
-                circle.classList.add('heartbeat');
-                heartbeatSound.play();
-                setTimeout(() => {
-                    circle.classList.add('glitch');
-                    setTimeout(() => {
-                        window.location.href = "https://www.ionos.com/domainshop/search?skipContractSelection=true#/result";
-                    }, 500); // After glitch completes, navigate to the pay page
-                }, 1200); // Wait for heartbeat to complete before glitch
-            }
-        });
-    </script>
+    // 30s erratic + 33s black stillness
+    setTimeout(() => {
+      pulse.style.display = "none";
+      document.body.style.background = "black";
+    }, 50000);
+
+    // Final Reveal after blackout
+    setTimeout(() => {
+      reveal.style.display = "flex";
+    }, 83000);
+  </script>
 </body>
 </html>
